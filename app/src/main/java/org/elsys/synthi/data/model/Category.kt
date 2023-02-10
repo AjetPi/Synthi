@@ -1,4 +1,4 @@
-package org.elsys.synthi.data
+package org.elsys.synthi.data.model
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons

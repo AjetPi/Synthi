@@ -6,17 +6,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.elsys.synthi.data.Audio
 import org.elsys.synthi.ui.theme.SynthiTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SynthiApp(
-    library: List<Audio>,
-    modifier: Modifier = Modifier,
-) {
+fun SynthiApp(modifier: Modifier = Modifier) {
     val viewModel: SynthiViewModel = viewModel()
-    viewModel.updateLibrary(library)
     val synthiUiState = viewModel.uiState.collectAsState().value
 
     SynthiHome(
@@ -30,6 +25,6 @@ fun SynthiApp(
 @Composable
 fun SynthiAppPreview() {
     SynthiTheme(darkTheme = true) {
-        SynthiApp(emptyList())
+        SynthiApp()
     }
 }

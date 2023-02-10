@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.elsys.synthi.R
-import org.elsys.synthi.data.Category
+import org.elsys.synthi.data.model.Category
 
 @ExperimentalMaterial3Api
 @Composable
