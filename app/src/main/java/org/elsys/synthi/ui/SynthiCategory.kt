@@ -3,9 +3,9 @@ package org.elsys.synthi.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,12 +74,12 @@ fun SynthiItem(
             Text(
                 text = title,
                 modifier = Modifier.padding(bottom = 2.dp),
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.subtitle1
             )
             if (label != null) {
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.labelMedium
+                    style = MaterialTheme.typography.subtitle2
                 )
             }
         }
