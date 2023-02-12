@@ -23,7 +23,7 @@ class AudioHelper @Inject constructor(@ApplicationContext val context: Context) 
     )
     private val selection = "${MediaStore.Audio.Media.IS_MUSIC} = ?"
     private val selectionArgs = arrayOf("1")
-    private val sortOrder = "${projection[1]} ASC"
+    private val sortOrder = "${projection[0]} ASC"
 
     @WorkerThread
     fun getAudioList(): List<Audio> {

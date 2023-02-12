@@ -17,28 +17,28 @@ fun SynthiCategory(
     synthiUiState: SynthiUiState,
     modifier: Modifier = Modifier
 ) {
-    if (synthiUiState.library.isNotEmpty()) {
+    if (synthiUiState.library.songs.isNotEmpty()) {
         when (synthiUiState.currentCategory) {
             Category.Songs -> {
                 LazyColumn(modifier = modifier.padding(16.dp)) {
-                    items(synthiUiState.library) {
+                    items(synthiUiState.library.songs) {
                         SynthiItem(category = synthiUiState.currentCategory, title = it.title, label = it.artist)
                     }
                 }
             }
             Category.Albums -> {
-                val albums = synthiUiState.library.groupBy { it.album }.keys.toList()
                 LazyColumn(modifier = modifier.padding(16.dp)) {
-                    items(albums) {
-                        SynthiItem(category = synthiUiState.currentCategory, title = it, label = null)
+                    items(synthiUiState.library.albums.keys.toList()) {
+                        val first = synthiUiState.library.albums[it]!!.first()
+                        SynthiItem(category = synthiUiState.currentCategory, title = first.album, label = first.artist)
                     }
                 }
             }
             Category.Artists -> {
-                val artists = synthiUiState.library.groupBy { it.artist }.keys.toList()
                 LazyColumn(modifier = modifier.padding(16.dp)) {
-                    items(artists) {
-                        SynthiItem(category = synthiUiState.currentCategory, title = it, label = null)
+                    items(synthiUiState.library.artists.keys.toList()) {
+                        val first = synthiUiState.library.artists[it]!!.first()
+                        SynthiItem(category = synthiUiState.currentCategory, title = first.artist, label = "")
                     }
                 }
             }
@@ -51,7 +51,7 @@ fun SynthiCategory(
 fun SynthiItem(
     category: Category,
     title: String,
-    label: String?,
+    label: String,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -76,12 +76,10 @@ fun SynthiItem(
                 modifier = Modifier.padding(bottom = 2.dp),
                 style = MaterialTheme.typography.subtitle1
             )
-            if (label != null) {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.subtitle2
-                )
-            }
+            Text(
+                text = label,
+                style = MaterialTheme.typography.subtitle2
+            )
         }
     }
 }

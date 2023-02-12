@@ -1,9 +1,9 @@
 package org.elsys.synthi.ui
 
-import org.elsys.synthi.data.model.Audio
 import org.elsys.synthi.data.model.Category
+import org.elsys.synthi.data.model.Library
 
 data class SynthiUiState(
-    val library: List<Audio> = emptyList(),
+    val library: Library = Library(),
     val currentCategory: Category = Category.Songs
 )

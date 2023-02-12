@@ -7,28 +7,27 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.elsys.synthi.data.model.Audio
 import org.elsys.synthi.data.model.Category
+import org.elsys.synthi.data.model.Library
 import org.elsys.synthi.data.repository.AudioRepository
 import javax.inject.Inject
 
 @HiltViewModel
-class SynthiViewModel @Inject constructor(val repository: AudioRepository) : ViewModel() {
+class SynthiViewModel @Inject constructor(private val repository: AudioRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(SynthiUiState())
     val uiState: StateFlow<SynthiUiState> = _uiState
 
     init {
-        _uiState.value = SynthiUiState()
-        viewModelScope.launch {
-            updateLibrary(repository.getAudioList())
-        }
+        setLibrary()
     }
 
-    fun updateLibrary(library: List<Audio>) {
-        _uiState.update {
-            it.copy(
-                library = library
-            )
+    fun setLibrary() {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    library = Library(songs = repository.getAudioList())
+                )
+            }
         }
     }
 

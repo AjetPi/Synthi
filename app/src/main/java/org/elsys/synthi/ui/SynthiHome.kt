@@ -13,26 +13,25 @@ import androidx.compose.ui.res.stringResource
 import org.elsys.synthi.R
 import org.elsys.synthi.data.model.Category
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SynthiHome(
     synthiUiState: SynthiUiState,
     onCategoryClick: (Category) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    BottomSheetScaffold(
+    Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = { SynthiTopBar() },
-        sheetContent = {
+        bottomBar = {
             SynthiBottomBar(
                 selected = synthiUiState.currentCategory,
                 onClick = onCategoryClick
             )
         }
-    ) {
+    ) { padding ->
         SynthiCategory(
             synthiUiState = synthiUiState,
-            modifier = modifier.padding(it)
+            modifier = modifier.padding(padding)
         )
     }
 }

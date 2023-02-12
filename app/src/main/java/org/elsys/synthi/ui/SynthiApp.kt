@@ -8,13 +8,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import org.elsys.synthi.ui.theme.SynthiTheme
 
 @Composable
-fun SynthiApp(modifier: Modifier = Modifier) {
-    val viewModel: SynthiViewModel = viewModel()
+fun SynthiApp(
+    modifier: Modifier = Modifier,
+    viewModel: SynthiViewModel = viewModel()
+) {
     val synthiUiState = viewModel.uiState.collectAsState().value
 
     SynthiHome(
         synthiUiState = synthiUiState,
-        onCategoryClick = { viewModel.updateCurrentCategory(it) },
+        onCategoryClick = { category ->
+            viewModel.updateCurrentCategory(category)
+        },
         modifier = modifier
     )
 }
@@ -22,7 +26,7 @@ fun SynthiApp(modifier: Modifier = Modifier) {
 @Preview(showSystemUi = true)
 @Composable
 fun SynthiAppPreview() {
-    SynthiTheme(darkTheme = true) {
+    SynthiTheme {
         SynthiApp()
     }
 }
