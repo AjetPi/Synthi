@@ -1,25 +1,24 @@
-package org.elsys.synthi.ui
+package org.elsysbg.synthi.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.elsys.synthi.ui.theme.SynthiTheme
+import org.elsysbg.synthi.ui.theme.SynthiTheme
 
 @Composable
 fun SynthiApp(
     modifier: Modifier = Modifier,
-    viewModel: SynthiViewModel = viewModel()
+    viewModel: MainViewModel = viewModel()
 ) {
     val synthiUiState = viewModel.uiState.collectAsState().value
 
-    SynthiHome(
+    SynthiHomeScreen(
         synthiUiState = synthiUiState,
-        onCategoryClick = { category ->
-            viewModel.updateCurrentCategory(category)
-        },
-        modifier = modifier
+        onCategoryClick = { viewModel.updateCurrentCategory(it) },
+        modifier = modifier,
+        onItemClick = { viewModel.playFromMedia(it) }
     )
 }
 

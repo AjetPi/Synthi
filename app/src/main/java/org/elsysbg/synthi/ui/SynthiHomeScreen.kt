@@ -1,4 +1,4 @@
-package org.elsys.synthi.ui
+package org.elsysbg.synthi.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,14 +10,16 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import org.elsys.synthi.R
-import org.elsys.synthi.data.model.Category
+import org.elsysbg.synthi.R
+import org.elsysbg.synthi.data.model.Category
+import org.elsysbg.synthi.data.model.Media
 
 @Composable
-fun SynthiHome(
+fun SynthiHomeScreen(
     synthiUiState: SynthiUiState,
     onCategoryClick: (Category) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onItemClick: (Media) -> Unit
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -31,7 +33,8 @@ fun SynthiHome(
     ) { padding ->
         SynthiCategory(
             synthiUiState = synthiUiState,
-            modifier = modifier.padding(padding)
+            modifier = modifier.padding(padding),
+            onItemClick
         )
     }
 }
@@ -78,9 +81,7 @@ private fun SynthiBottomBar(
                         contentDescription = null
                     )
                 },
-                label = {
-                    Text(text = stringResource(id = it.id))
-                },
+                label = { Text(text = stringResource(id = it.id)) },
                 alwaysShowLabel = false
             )
         }

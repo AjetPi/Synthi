@@ -1,4 +1,4 @@
-package org.elsys.synthi.data
+package org.elsysbg.synthi.data.repository
 
 import android.content.ContentUris
 import android.content.Context
@@ -6,10 +6,10 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.annotation.WorkerThread
 import dagger.hilt.android.qualifiers.ApplicationContext
-import org.elsys.synthi.data.model.Audio
+import org.elsysbg.synthi.data.model.Media
 import javax.inject.Inject
 
-class AudioHelper @Inject constructor(@ApplicationContext val context: Context) {
+class MediaHelper @Inject constructor(@ApplicationContext val context: Context) {
     private val collection: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
     private val projection = arrayOf(
         MediaStore.Audio.Media._ID,
@@ -19,15 +19,16 @@ class AudioHelper @Inject constructor(@ApplicationContext val context: Context) 
         MediaStore.Audio.Media.ARTIST_ID,
         MediaStore.Audio.Media.ARTIST,
         MediaStore.Audio.Media.ALBUM_ID,
-        MediaStore.Audio.Media.ALBUM
+        MediaStore.Audio.Media.ALBUM,
+        MediaStore.Audio.Media.TRACK
     )
     private val selection = "${MediaStore.Audio.Media.IS_MUSIC} = ?"
     private val selectionArgs = arrayOf("1")
     private val sortOrder = "${projection[0]} ASC"
 
     @WorkerThread
-    fun getAudioList(): List<Audio> {
-        val audioList = mutableListOf<Audio>()
+    fun getMedias(): List<Media> {
+        val medias = mutableListOf<Media>()
 
         val query = context.contentResolver.query(
             collection,
@@ -45,6 +46,7 @@ class AudioHelper @Inject constructor(@ApplicationContext val context: Context) 
             val artistColumn = cursor.getColumnIndexOrThrow(projection[5])
             val albumIdColumn = cursor.getColumnIndexOrThrow(projection[6])
             val albumColumn = cursor.getColumnIndexOrThrow(projection[7])
+            val trackColumn = cursor.getColumnIndexOrThrow(projection[8])
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idColumn)
@@ -55,22 +57,24 @@ class AudioHelper @Inject constructor(@ApplicationContext val context: Context) 
                 val artist = cursor.getString(artistColumn)
                 val albumId = cursor.getLong(albumIdColumn)
                 val album = cursor.getString(albumColumn)
+                val track = cursor.getInt(trackColumn)
                 val contentUri: Uri = ContentUris.withAppendedId(collection, id)
 
-                audioList += Audio(
-                        contentUri,
-                        id,
-                        displayName,
-                        duration,
-                        title,
-                        artistId,
-                        artist,
-                        albumId,
-                        album
+                medias += Media(
+                    contentUri,
+                    id,
+                    displayName,
+                    duration,
+                    title,
+                    artistId,
+                    artist,
+                    albumId,
+                    album,
+                    track
                 )
             }
         }
 
-        return audioList
+        return medias
     }
 }

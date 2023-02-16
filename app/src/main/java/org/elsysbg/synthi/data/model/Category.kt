@@ -1,4 +1,4 @@
-package org.elsys.synthi.data.model
+package org.elsysbg.synthi.data.model
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
@@ -7,7 +7,7 @@ import androidx.compose.material.icons.filled.Audiotrack
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.QueueMusic
 import androidx.compose.ui.graphics.vector.ImageVector
-import org.elsys.synthi.R
+import org.elsysbg.synthi.R
 
 enum class Category(
     @StringRes val id: Int,

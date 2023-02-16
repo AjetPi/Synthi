@@ -1,4 +1,4 @@
-package org.elsys.synthi.ui.theme
+package org.elsysbg.synthi.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

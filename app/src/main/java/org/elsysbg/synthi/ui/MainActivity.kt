@@ -1,4 +1,4 @@
-package org.elsys.synthi
+package org.elsysbg.synthi.ui
 
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -7,13 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import dagger.hilt.android.AndroidEntryPoint
-import org.elsys.synthi.ui.SynthiApp
-import org.elsys.synthi.ui.SynthiViewModel
-import org.elsys.synthi.ui.theme.SynthiTheme
+import org.elsysbg.synthi.ui.theme.SynthiTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val viewModel: SynthiViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace 'org.elsys.synthi'
+    namespace 'org.elsysbg.synthi'
     compileSdk 33
 
     defaultConfig {
-        applicationId "org.elsys.synthi"
+        applicationId "org.elsysbg.synthi"
         minSdk 26
         targetSdk 33
         versionCode 1
@@ -59,6 +59,11 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
     implementation "androidx.compose.material:material-icons-extended:$material_version"
     implementation "com.google.dagger:hilt-android:$hilt_version"
+    implementation 'androidx.media:media:1.6.0'
+    implementation "com.google.android.exoplayer:exoplayer:$exoplayer_version"
+    implementation "com.google.android.exoplayer:extension-mediasession:$exoplayer_version"
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    kapt "com.github.bumptech.glide:compiler:$glide_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
     implementation "com.google.dagger:hilt-android-compiler:$hilt_version"
     testImplementation 'junit:junit:4.13.2'

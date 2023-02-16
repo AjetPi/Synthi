@@ -1,4 +1,4 @@
-package org.elsys.synthi
+package org.elsysbg.synthi
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
