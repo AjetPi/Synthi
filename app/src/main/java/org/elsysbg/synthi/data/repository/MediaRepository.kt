@@ -10,7 +10,12 @@ interface MediaRepository {
 }
 
 class DefaultMediaRepository @Inject constructor(private val mediaHelper: MediaHelper): MediaRepository {
+    lateinit var medias: List<Media>
+
     override suspend fun getMedias() = withContext(Dispatchers.IO) {
-        mediaHelper.getMedias()
+        if (!::medias.isInitialized){
+            medias = mediaHelper.getMedias()
+        }
+        medias
     }
 }

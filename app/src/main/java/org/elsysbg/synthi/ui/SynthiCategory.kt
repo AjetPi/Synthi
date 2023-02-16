@@ -8,7 +8,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,43 +21,53 @@ fun SynthiCategory(
     modifier: Modifier = Modifier,
     onItemClick: (Media) -> Unit
 ) {
-    if (synthiUiState.library.songs.isNotEmpty()) {
-        when (synthiUiState.currentCategory) {
-            Category.Songs -> {
-                LazyColumn(modifier = modifier.padding(16.dp)) {
-                    items(synthiUiState.library.songs) { audio ->
-                        SynthiItem(category = synthiUiState.currentCategory, title = audio.title, label = audio.artist, onItemClick = { onItemClick(audio) })
+    synthiUiState.apply {
+        if (library.songs.isNotEmpty()) {
+            when (currentCategory) {
+                Category.Songs -> {
+                    LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
+                        items(library.songs) { media ->
+                            SynthiMediaItem(
+                                category = currentCategory,
+                                media = media,
+                                onItemClick = { onItemClick(media) })
+                        }
                     }
                 }
-            }
-            Category.Albums -> {
-                /*LazyColumn(modifier = modifier.padding(16.dp)) {
-                    items(synthiUiState.library.albums.keys.toList()) {
-                        val first = synthiUiState.library.albums[it]!!.first()
-                        SynthiItem(category = synthiUiState.currentCategory, title = first.album, label = first.artist)
+                Category.Albums -> {
+                    LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
+                        items(library.albums.keys.toList()) {
+                            SynthiMediaList(
+                                category = currentCategory,
+                                list = library.albums[it]!!,
+                                onItemClick = onItemClick
+                            )
+                        }
                     }
-                }*/
-            }
-            Category.Artists -> {
-                /*LazyColumn(modifier = modifier.padding(16.dp)) {
-                    items(synthiUiState.library.artists.keys.toList()) {
-                        val first = synthiUiState.library.artists[it]!!.first()
-                        SynthiItem(category = synthiUiState.currentCategory, title = first.artist, label = "")
+                }
+                Category.Artists -> {
+                    LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
+                        items(synthiUiState.library.artists.keys.toList()) {
+                            SynthiMediaList(
+                                category = currentCategory,
+                                list = library.artists[it]!!,
+                                onItemClick = onItemClick
+                            )
+                        }
                     }
-                }*/
+                }
+                Category.Playlists -> {}
             }
-            Category.Playlists -> {}
         }
     }
 }
 
 @Composable
-fun SynthiItem(
+fun SynthiMediaItem(
     category: Category,
-    title: String,
-    label: String,
-    modifier: Modifier = Modifier,
-    onItemClick: () -> Unit
+    media: Media,
+    onItemClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
@@ -67,28 +77,84 @@ fun SynthiItem(
                 onItemClick()
             }
     ) {
-        Row {
+        Row(
+            modifier = Modifier.padding(vertical = 4.dp),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Icon(
                 imageVector = category.icon,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxHeight()
-                    .align(Alignment.CenterVertically)
+                    .padding(horizontal = 8.dp)
             )
-            Column(
-                modifier = Modifier
-                    .padding(start = 4.dp)
-                    .align(alignment = Alignment.CenterVertically)
-            ) {
+            Column {
                 Text(
-                    text = title,
+                    text = media.title,
                     modifier = Modifier.padding(bottom = 2.dp),
                     style = MaterialTheme.typography.subtitle1
                 )
                 Text(
-                    text = label,
+                    text = media.artist,
                     style = MaterialTheme.typography.subtitle2
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun SynthiMediaList(
+    category: Category,
+    list: List<Media>,
+    onItemClick: (Media) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var expandedState by remember {
+        mutableStateOf(false)
+    }
+
+    Column {
+        Card(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+                .clickable { expandedState = !expandedState }
+        ) {
+            Row(
+                modifier = Modifier.padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = category.icon,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(horizontal = 8.dp)
+                )
+                Column {
+                    Text(
+                        text = if (category == Category.Albums) list[0].album else list[0].artist,
+                        modifier = Modifier.padding(bottom = 2.dp),
+                        style = MaterialTheme.typography.subtitle1
+                    )
+                    Text(
+                        text = "${list.size} songs",
+                        style = MaterialTheme.typography.subtitle2
+                    )
+                }
+            }
+        }
+        if (expandedState) {
+            Column {
+                list.forEach {
+                    SynthiMediaItem(
+                        category = Category.Songs,
+                        media = it,
+                        onItemClick = { onItemClick(it) })
+                }
             }
         }
     }

@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import org.elsysbg.synthi.R
 import org.elsysbg.synthi.data.model.Category
 import org.elsysbg.synthi.data.model.Media
@@ -23,9 +23,9 @@ fun SynthiHomeScreen(
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = { SynthiTopBar() },
+        topBar = { SynthiTopAppBar() },
         bottomBar = {
-            SynthiBottomBar(
+            SynthiBottomNavigation(
                 selected = synthiUiState.currentCategory,
                 onClick = onCategoryClick
             )
@@ -40,48 +40,45 @@ fun SynthiHomeScreen(
 }
 
 @Composable
-private fun SynthiTopBar(modifier: Modifier = Modifier) {
+private fun SynthiTopAppBar(modifier: Modifier = Modifier) {
     TopAppBar (
         title = {
             Text(
                 text = stringResource(id = R.string.app_name),
-                style = MaterialTheme.typography.subtitle1
+                style = MaterialTheme.typography.h6
             )
         },
         modifier = modifier,
         navigationIcon = {
             Icon(
+                modifier = Modifier.padding(start = 16.dp),
                 imageVector = Icons.Default.Search,
                 contentDescription = null
             )
         },
-        actions = {
+        /*actions = {
             Icon(
+                modifier = Modifier.padding(end = 16.dp),
                 imageVector = Icons.Default.Settings,
                 contentDescription = null
             )
-        }
+        }*/
     )
 }
 
 @Composable
-private fun SynthiBottomBar(
+private fun SynthiBottomNavigation(
     selected: Category,
     onClick: (Category) -> Unit,
     modifier: Modifier = Modifier
 ) {
     BottomNavigation(modifier = modifier.fillMaxWidth()) {
-        Category.values().forEach {
+        Category.values().forEach { category ->
             BottomNavigationItem(
-                selected = selected == it,
-                onClick = { onClick(it) },
-                icon = {
-                    Icon(
-                        imageVector = it.icon,
-                        contentDescription = null
-                    )
-                },
-                label = { Text(text = stringResource(id = it.id)) },
+                selected = selected == category,
+                onClick = { onClick(category) },
+                icon = { Icon(imageVector = category.icon, contentDescription = category.name) },
+                label = { Text(text = stringResource(id = category.id)) },
                 alwaysShowLabel = false
             )
         }
