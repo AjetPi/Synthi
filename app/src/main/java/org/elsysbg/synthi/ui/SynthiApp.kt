@@ -2,6 +2,7 @@ package org.elsysbg.synthi.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -12,13 +13,16 @@ fun SynthiApp(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = viewModel()
 ) {
-    val synthiUiState = viewModel.uiState.collectAsState().value
+    val uiState by viewModel.uiState.collectAsState()
 
     SynthiHomeScreen(
-        synthiUiState = synthiUiState,
+        uiState = uiState,
+        onBackClick = { viewModel.selectList(null) },
+        onSearchClick = { viewModel.updateSearch(it) },
         onCategoryClick = { viewModel.updateCurrentCategory(it) },
-        modifier = modifier,
-        onItemClick = { viewModel.playFromMedia(it) }
+        onItemClick = { viewModel.playFromMedia(it) },
+        onListClick = { viewModel.selectList(it) },
+        modifier = modifier
     )
 }
 

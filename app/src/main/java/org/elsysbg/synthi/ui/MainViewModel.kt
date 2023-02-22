@@ -45,7 +45,8 @@ class MainViewModel @Inject constructor(
     fun updateCurrentCategory(category: Category) {
         _uiState.update {
             it.copy(
-                currentCategory = category
+                currentCategory = category,
+                selectedListId = null
             )
         }
     }
@@ -63,6 +64,11 @@ class MainViewModel @Inject constructor(
     }
 
     fun playFromMedia(media: Media) {
+        _uiState.update {
+            it.copy(
+                currentMedia = media
+            )
+        }
         serviceConnection.apply {
             if (media.id.toString() == currentMediaMetadata.value?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)) {
                 if (playbackState.value?.isPlaying == true) transportControls.pause() else transportControls.play()
@@ -75,5 +81,21 @@ class MainViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         serviceConnection.unsubscribe(Constants.MEDIA_ROOT_ID, object : MediaBrowserCompat.SubscriptionCallback() {})
+    }
+
+    fun selectList(id: Long?) {
+        _uiState.update {
+            it.copy(
+                selectedListId = id
+            )
+        }
+    }
+
+    fun updateSearch(value: String?) {
+        _uiState.update {
+            it.copy(
+                search = value
+            )
+        }
     }
 }
