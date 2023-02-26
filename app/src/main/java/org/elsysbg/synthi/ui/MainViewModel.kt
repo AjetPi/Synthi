@@ -36,7 +36,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update {
                 it.copy(
-                    library = Library(songs = repository.getMedias())
+                    library = Library(songs = repository.getMedias(), playlists = repository.getPlaylists())
                 )
             }
         }

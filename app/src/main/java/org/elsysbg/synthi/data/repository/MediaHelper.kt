@@ -7,27 +7,34 @@ import android.provider.MediaStore
 import androidx.annotation.WorkerThread
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.elsysbg.synthi.data.model.Media
+import org.elsysbg.synthi.data.model.Playlist
 import javax.inject.Inject
 
 class MediaHelper @Inject constructor(@ApplicationContext val context: Context) {
-    private val collection: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-    private val projection = arrayOf(
-        MediaStore.Audio.Media._ID,
-        MediaStore.Audio.Media.DISPLAY_NAME,
-        MediaStore.Audio.Media.DURATION,
-        MediaStore.Audio.Media.TITLE,
-        MediaStore.Audio.Media.ARTIST_ID,
-        MediaStore.Audio.Media.ARTIST,
-        MediaStore.Audio.Media.ALBUM_ID,
-        MediaStore.Audio.Media.ALBUM,
-        MediaStore.Audio.Media.TRACK
-    )
-    private val selection = "${MediaStore.Audio.Media.IS_MUSIC} = ?"
-    private val selectionArgs = arrayOf("1")
-    private val sortOrder = "${projection[0]} ASC"
+    private lateinit var collection: Uri
+    private lateinit var projection: Array<String>
+    private lateinit var selection: String
+    private lateinit var selectionArgs: Array<String>
+    private lateinit var sortOrder: String
 
     @WorkerThread
     fun getMedias(): List<Media> {
+        collection = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        projection = arrayOf(
+            MediaStore.Audio.Media._ID,
+            MediaStore.Audio.Media.DISPLAY_NAME,
+            MediaStore.Audio.Media.DURATION,
+            MediaStore.Audio.Media.TITLE,
+            MediaStore.Audio.Media.ARTIST_ID,
+            MediaStore.Audio.Media.ARTIST,
+            MediaStore.Audio.Media.ALBUM_ID,
+            MediaStore.Audio.Media.ALBUM,
+            MediaStore.Audio.Media.TRACK
+        )
+        selection = "${MediaStore.Audio.Media.IS_MUSIC} = ?"
+        selectionArgs = arrayOf("1")
+        sortOrder = MediaStore.Audio.Media.DEFAULT_SORT_ORDER
+
         val medias = mutableListOf<Media>()
 
         val query = context.contentResolver.query(
@@ -76,5 +83,42 @@ class MediaHelper @Inject constructor(@ApplicationContext val context: Context) 
         }
 
         return medias
+    }
+
+    @Suppress("DEPRECATION")
+    @WorkerThread
+    fun getPlaylists(): List<Playlist> {
+        collection = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI
+        projection = arrayOf(
+            MediaStore.Audio.Playlists._ID,
+            MediaStore.Audio.Playlists.NAME
+        )
+        sortOrder = MediaStore.Audio.Playlists.DEFAULT_SORT_ORDER
+
+        val playlists = mutableListOf<Playlist>()
+
+        val query = context.contentResolver.query(
+            collection,
+            projection,
+            null,
+            null,
+            sortOrder
+        )
+        query?.use { cursor ->
+            val idColumn = cursor.getColumnIndexOrThrow(projection[0])
+            val nameColumn = cursor.getColumnIndexOrThrow(projection[1])
+
+            while (cursor.moveToNext()) {
+                val id = cursor.getLong(idColumn)
+                val name = cursor.getString(nameColumn)
+
+                playlists += Playlist(
+                    id,
+                    name
+                )
+            }
+        }
+
+        return playlists
     }
 }

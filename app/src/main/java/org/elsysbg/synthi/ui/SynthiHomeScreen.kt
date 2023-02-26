@@ -10,6 +10,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
@@ -150,6 +151,7 @@ private fun SynthiBottomBar(
                     Icon(
                         imageVector = Icons.Default.PlayArrow,
                         contentDescription = null,
+                        tint = MaterialTheme.colors.onPrimary
                     )
                 }
             }
@@ -252,7 +254,18 @@ fun SynthiCategoryContent(
                         }
                     }
                 }
-                Category.Playlists -> {}
+                Category.Playlists -> {
+                    LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
+                        items(library.playlists) { playlist ->
+                            SynthiCategoryItem(
+                                category = currentCategory,
+                                title = playlist.name,
+                                subtitle = "",
+                                onItemClick = {}
+                            )
+                        }
+                    }
+                }
             }
         }
     }
