@@ -11,20 +11,20 @@ interface MediaRepository {
     suspend fun getPlaylists(): List<Playlist>
 }
 
-class DefaultMediaRepository @Inject constructor(private val mediaHelper: MediaHelper): MediaRepository {
+class MediaRepositoryImpl @Inject constructor(private val helper: MediaRepositoryHelper): MediaRepository {
     private lateinit var medias: List<Media>
     private lateinit var playlists: List<Playlist>
 
     override suspend fun getMedias() = withContext(Dispatchers.IO) {
         if (!::medias.isInitialized){
-            medias = mediaHelper.getMedias()
+            medias = helper.getMedias()
         }
         medias
     }
 
     override suspend fun getPlaylists() = withContext(Dispatchers.IO) {
         if (!::playlists.isInitialized){
-            playlists = mediaHelper.getPlaylists()
+            playlists = helper.getPlaylists()
         }
         playlists
     }

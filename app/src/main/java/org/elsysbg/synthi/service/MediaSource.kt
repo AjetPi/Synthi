@@ -7,7 +7,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
-import org.elsysbg.synthi.data.repository.DefaultMediaRepository
+import org.elsysbg.synthi.data.repository.MediaRepositoryImpl
 import javax.inject.Inject
 
 typealias onReadyListener = (Boolean) -> Unit
@@ -18,7 +18,7 @@ enum class MediaSourceState {
     STATE_INITIALIZED
 }
 
-class MediaSource @Inject constructor(private val repository: DefaultMediaRepository) {
+class MediaSource @Inject constructor(private val repository: MediaRepositoryImpl) {
     var mediasMetadata = emptyList<MediaMetadataCompat>()
     private val listeners = mutableListOf<onReadyListener>()
     private var state: MediaSourceState = MediaSourceState.STATE_CREATED
