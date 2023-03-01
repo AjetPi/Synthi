@@ -1,5 +1,6 @@
 package org.elsysbg.synthi.ui
 
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -17,6 +18,12 @@ import org.elsysbg.synthi.data.model.Media
 fun SynthiNavHost(
     navController: NavHostController,
     uiState: SynthiUiState,
+    currentMedia: Media?,
+    playbackState: PlaybackStateCompat?,
+    currentPosition: Long,
+    seekTo: (Long) -> Unit,
+    skipPrevious: () -> Unit,
+    skipNext: () -> Unit,
     onPlay: (Media) -> Unit,
     onNavigate: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -32,7 +39,10 @@ fun SynthiNavHost(
                     SynthiHomeScreen(
                         uiState = uiState,
                         currentCategory = category,
-                        onItemClick = onPlay,
+                        onItemClick = {
+                            onPlay(it)
+                            navController.navigate("Player")
+                        },
                         onListClick = { listId ->
                             onNavigate(false)
                             navController.navigate("${category.name}/$listId")
@@ -51,9 +61,26 @@ fun SynthiNavHost(
                         library = uiState.library,
                         category = category,
                         listId = backStackEntry.arguments!!.getLong("listId"),
-                        onItemClick = onPlay
+                        onItemClick = {
+                            onPlay(it)
+                            navController.navigate("Player")
+                        }
                     )
                 }
+            }
+        }
+
+        composable(route = "Player") {
+            if (currentMedia != null && playbackState != null) {
+                SynthiPlayerScreen(
+                    media = currentMedia,
+                    playbackState = playbackState,
+                    position = currentPosition,
+                    seekTo = seekTo,
+                    skipPrevious = skipPrevious,
+                    play = onPlay,
+                    skipNext = skipNext
+                )
             }
         }
     }

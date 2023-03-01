@@ -3,21 +3,21 @@ package org.elsysbg.synthi.service
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 
-class MediaBrowserConnectionCallbackImpl(private val serviceConnection: MediaServiceConnection) : MediaBrowserCompat.ConnectionCallback() {
+class MediaBrowserConnectionCallbackImpl(private val connection: MediaServiceConnection) : MediaBrowserCompat.ConnectionCallback() {
     override fun onConnected() {
-        serviceConnection.apply {
+        connection.apply {
             mediaController = MediaControllerCompat(context, mediaBrowser.sessionToken).apply {
-                registerCallback(MediaControllerCallbackImpl(serviceConnection))
+                registerCallback(MediaControllerCallbackImpl(connection))
             }
             isConnected.value = true
         }
     }
 
     override fun onConnectionSuspended() {
-        serviceConnection.isConnected.value = false
+        connection.isConnected.value = false
     }
 
     override fun onConnectionFailed() {
-        serviceConnection.isConnected.value = false
+        connection.isConnected.value = false
     }
 }

@@ -15,6 +15,7 @@ import org.elsysbg.synthi.data.model.Media
 import org.elsysbg.synthi.data.repository.MediaRepositoryImpl
 import org.elsysbg.synthi.service.MediaServiceConnection
 import org.elsysbg.synthi.util.Constants
+import org.elsysbg.synthi.util.currentPosition
 import org.elsysbg.synthi.util.isPlaying
 import javax.inject.Inject
 
@@ -25,6 +26,13 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SynthiUiState())
     val uiState: StateFlow<SynthiUiState> = _uiState.asStateFlow()
+
+    private val currentMediaMetadata = connection.currentMediaMetadata
+    val currentMedia: Media?
+        get() = uiState.value.library.songs.find { media -> media.id == currentMediaMetadata.value?.description?.mediaId?.toLong() }
+    val playbackState = connection.playbackState
+    val currentPosition: Long
+        get() = playbackState.value?.currentPosition ?: 0
 
     init {
         updateLibrary()

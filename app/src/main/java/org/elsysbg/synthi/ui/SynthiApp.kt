@@ -51,6 +51,12 @@ fun SynthiApp(
         SynthiNavHost(
             uiState = uiState,
             navController = navController,
+            currentMedia = viewModel.currentMedia,
+            playbackState = viewModel.playbackState.value,
+            currentPosition = viewModel.currentPosition,
+            seekTo = { viewModel.seekTo(it) },
+            skipPrevious = { viewModel.skipToPrevious() },
+            skipNext = { viewModel.skipToNext() },
             onPlay = { viewModel.playFromMedia(it) },
             onNavigate = { viewModel.updateBottomNavigationState(it) },
             modifier = modifier.padding(innerPadding)
