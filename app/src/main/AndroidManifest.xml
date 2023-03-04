@@ -15,7 +15,7 @@
         android:theme="@style/Theme.Synthi"
         tools:targetApi="33">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".component.activity.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Synthi">
             <intent-filter>
@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".service.MediaService"
+            android:name=".component.service.MediaService"
             android:exported="true"
             android:stopWithTask="true">
             <intent-filter>

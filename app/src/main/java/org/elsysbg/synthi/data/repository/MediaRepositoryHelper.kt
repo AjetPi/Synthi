@@ -3,7 +3,6 @@ package org.elsysbg.synthi.data.repository
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
-import android.net.Uri
 import android.provider.MediaStore
 import androidx.annotation.WorkerThread
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -50,7 +49,7 @@ class MediaRepositoryHelper @Inject constructor(@ApplicationContext val context:
             val albumId = getLong(getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
             val album = getString(getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM))
             val track = getInt(getColumnIndexOrThrow(MediaStore.Audio.Media.TRACK))
-            val contentUri: Uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
+            val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
 
             return Media(
                 contentUri,
@@ -116,7 +115,8 @@ class MediaRepositoryHelper @Inject constructor(@ApplicationContext val context:
             MediaStore.Audio.Playlists.Members.ARTIST,
             MediaStore.Audio.Playlists.Members.ALBUM_ID,
             MediaStore.Audio.Playlists.Members.ALBUM,
-            MediaStore.Audio.Playlists.Members.TRACK
+            MediaStore.Audio.Playlists.Members.TRACK,
+            MediaStore.Audio.Playlists.Members.PLAY_ORDER
         )
         val selection = "${MediaStore.Audio.Playlists.Members.IS_MUSIC} = ?"
         val selectionArgs = arrayOf("1")
@@ -141,7 +141,8 @@ class MediaRepositoryHelper @Inject constructor(@ApplicationContext val context:
             val albumId = getLong(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.ALBUM_ID))
             val album = getString(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.ALBUM))
             val track = getInt(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.TRACK))
-            val contentUri: Uri = ContentUris.withAppendedId(MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId), id)
+            val playOrder = getInt(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.PLAY_ORDER))
+            val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId), id)
 
             return Media(
                 contentUri,
@@ -153,7 +154,8 @@ class MediaRepositoryHelper @Inject constructor(@ApplicationContext val context:
                 artist,
                 albumId,
                 album,
-                track
+                track,
+                playOrder
             )
         }
     }

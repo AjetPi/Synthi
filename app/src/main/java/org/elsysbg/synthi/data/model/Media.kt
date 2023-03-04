@@ -14,5 +14,6 @@ data class Media(
     val albumId: Long,
     val album: String,
     val track: Int,
+    val playOrder: Int = 0,
     val coverUri: Uri = ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId)
 )
