@@ -4,7 +4,7 @@ import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.bumptech.glide.RequestManager
-import org.elsysbg.synthi.data.model.Category
+import org.elsysbg.synthi.ui.Category
 import org.elsysbg.synthi.data.model.Library
 import org.elsysbg.synthi.data.model.Media
 

@@ -29,9 +29,10 @@ class MainActivity : ComponentActivity() {
     private fun requestPermission() {
         val permission = android.Manifest.permission.READ_EXTERNAL_STORAGE
         if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-            val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-                if (isGranted) viewModel.updateLibrary()
-            }
+            val requestPermissionLauncher =
+                registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                    if (isGranted) viewModel.updateLibrary()
+                }
             requestPermissionLauncher.launch(permission)
         }
     }

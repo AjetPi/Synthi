@@ -1,7 +1,6 @@
 package org.elsysbg.synthi.component.activity
 
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaMetadataCompat
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -76,9 +75,9 @@ class MainViewModel @Inject constructor(
 
     fun seekTo(pos: Long) = connection.controls.seekTo(pos)
 
-    fun playMedia(media: Media) {
+    fun playMedia(media: Media, toggle: Boolean) {
         connection.apply {
-            if (media.id.toString() == currentMetadata.value?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)) {
+            if (media == currentMedia && toggle) {
                 if (playbackState.value?.isPlaying == true) controls.pause() else controls.play()
             } else {
                 controls.playFromMediaId(media.id.toString(), null)

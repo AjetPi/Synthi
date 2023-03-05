@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.RequestManager
-import org.elsysbg.synthi.data.model.Category
+import org.elsysbg.synthi.ui.Category
 import org.elsysbg.synthi.data.model.Library
 import org.elsysbg.synthi.data.model.Media
 
@@ -27,9 +27,9 @@ fun SynthiHomeContent(
 ) {
     when (category) {
         Category.Songs -> {
-            val medias = library.songs.filter { it.title.contains(search ?: "", ignoreCase = true) }
+            val songs = library.songs.filter { it.title.contains(search ?: "", ignoreCase = true) }
             LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
-                items(medias) { media ->
+                items(songs) { media ->
                     SynthiUnorderedAudioItem(
                         requestManager = requestManager,
                         coverUri = media.coverUri,
@@ -68,14 +68,19 @@ fun SynthiHomeContent(
                         imageVector = category.icon,
                         title = artist.name,
                         subtitle = null,
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).clickable { onListClick(artist.id) }
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                            .clickable { onListClick(artist.id) }
                     )
                 }
             }
         }
         Category.Playlists -> {
+            val playlists =
+                library.playlists.filter { it.name.contains(search ?: "", ignoreCase = true) }
             LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
-                items(library.playlists) { playlist ->
+                items(playlists) { playlist ->
                     SynthiUnorderedAudioItem(
                         requestManager = requestManager,
                         coverUri = Uri.EMPTY,

@@ -6,7 +6,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import org.elsysbg.synthi.data.model.Category
+import org.elsysbg.synthi.ui.Category
 
 @Composable
 fun SynthiBottomBar(

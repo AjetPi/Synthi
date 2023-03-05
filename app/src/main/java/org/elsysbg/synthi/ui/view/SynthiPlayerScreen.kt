@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.RequestManager
-import org.elsysbg.synthi.data.model.Category
+import org.elsysbg.synthi.ui.Category
 import org.elsysbg.synthi.data.model.Media
 import org.elsysbg.synthi.domain.util.formatted
 import org.elsysbg.synthi.domain.util.isPlaying

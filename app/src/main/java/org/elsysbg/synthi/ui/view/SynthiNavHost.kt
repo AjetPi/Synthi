@@ -9,27 +9,28 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.bumptech.glide.RequestManager
-import org.elsysbg.synthi.data.model.Category
+import org.elsysbg.synthi.ui.Category
 import org.elsysbg.synthi.data.model.Media
 import org.elsysbg.synthi.ui.SynthiUiState
 
 @Composable
 fun SynthiNavHost(
-    navController: NavHostController,
     uiState: SynthiUiState,
+    requestManager: RequestManager,
     currentMedia: Media?,
     playbackState: PlaybackStateCompat?,
     currentPosition: Long,
     seekTo: (Long) -> Unit,
     skipPrevious: () -> Unit,
     skipNext: () -> Unit,
-    onPlay: (Media) -> Unit,
+    play: (Media) -> Unit,
     onNavigate: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    requestManager: RequestManager,
+    navController: NavHostController = rememberNavController()
 ) {
     NavHost(
         navController = navController,
@@ -43,7 +44,7 @@ fun SynthiNavHost(
                         uiState = uiState,
                         currentCategory = category,
                         onItemClick = {
-                            onPlay(it)
+                            play(it)
                             navController.navigate("Player")
                         },
                         onListClick = { listId ->
@@ -66,7 +67,7 @@ fun SynthiNavHost(
                         category = category,
                         listId = backStackEntry.arguments!!.getLong("listId"),
                         onItemClick = {
-                            onPlay(it)
+                            play(it)
                             navController.navigate("Player")
                         },
                         requestManager = requestManager
@@ -83,7 +84,7 @@ fun SynthiNavHost(
                     playbackState = playbackState,
                     seekTo = seekTo,
                     skipPrevious = skipPrevious,
-                    play = onPlay,
+                    play = play,
                     skipNext = skipNext,
                     requestManager = requestManager
                 )

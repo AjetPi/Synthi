@@ -19,8 +19,7 @@ enum class MediaSourceState {
 }
 
 class MediaSource @Inject constructor(private val repository: MediaRepositoryImpl) {
-    var mediasMetadata = emptyList<MediaMetadataCompat>()
-    private val listeners = mutableListOf<onReadyListener>()
+    var metadataList = emptyList<MediaMetadataCompat>()
     private var state: MediaSourceState = MediaSourceState.STATE_CREATED
         set(value) {
             field = value
@@ -33,6 +32,7 @@ class MediaSource @Inject constructor(private val repository: MediaRepositoryImp
             }
         }
 
+    private val listeners = mutableListOf<onReadyListener>()
     fun whenReady(listener: onReadyListener) =
         if (state == MediaSourceState.STATE_INITIALIZED) {
             listener(true)
@@ -42,10 +42,10 @@ class MediaSource @Inject constructor(private val repository: MediaRepositoryImp
             false
         }
 
-    suspend fun setMediasMetadata() {
+    suspend fun setMetadata() {
         state = MediaSourceState.STATE_INITIALIZING
         val medias = repository.getMedias()
-        mediasMetadata = medias.map { media ->
+        metadataList = medias.map { media ->
             MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, media.contentUri.toString())
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, media.id.toString())
@@ -62,23 +62,21 @@ class MediaSource @Inject constructor(private val repository: MediaRepositoryImp
 
     fun getMediaSource(dataSource: CacheDataSource.Factory): ConcatenatingMediaSource {
         val concatenatingMediaSource = ConcatenatingMediaSource()
-        mediasMetadata.forEach { mediaMetadata ->
-            val mediaItem = MediaItem.fromUri(mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI))
-            val mediaSource = ProgressiveMediaSource
-                .Factory(dataSource)
-                .createMediaSource(mediaItem)
+        metadataList.forEach { metadata ->
+            val mediaItem = MediaItem.fromUri(metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI))
+            val mediaSource = ProgressiveMediaSource.Factory(dataSource).createMediaSource(mediaItem)
             concatenatingMediaSource.addMediaSource(mediaSource)
         }
         return concatenatingMediaSource
     }
 
-    fun getMediaItems() = mediasMetadata.map { mediaMetadata ->
+    fun getMediaItems() = metadataList.map { metadata ->
         val description = MediaDescriptionCompat.Builder()
-            .setMediaUri(mediaMetadata.description.mediaUri)
-            .setMediaId(mediaMetadata.description.mediaId)
-            .setTitle(mediaMetadata.description.title)
-            .setSubtitle(mediaMetadata.description.subtitle)
-            .setIconUri(mediaMetadata.description.iconUri)
+            .setMediaUri(metadata.description.mediaUri)
+            .setMediaId(metadata.description.mediaId)
+            .setTitle(metadata.description.title)
+            .setSubtitle(metadata.description.subtitle)
+            .setIconUri(metadata.description.iconUri)
             .build()
         MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
     }.toMutableList()

@@ -7,7 +7,7 @@ import org.elsysbg.synthi.component.service.MediaService
 
 class TimelineQueueNavigatorImpl(private val service: MediaService) : TimelineQueueNavigator(service.session) {
     override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat =
-        if (windowIndex < service.mediaSource.mediasMetadata.size) {
-            service.mediaSource.mediasMetadata[windowIndex].description
+        if (windowIndex < service.mediaSource.metadataList.size) {
+            service.mediaSource.metadataList[windowIndex].description
         } else MediaDescriptionCompat.Builder().build()
 }

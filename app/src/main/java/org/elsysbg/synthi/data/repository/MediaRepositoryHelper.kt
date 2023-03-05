@@ -2,7 +2,6 @@ package org.elsysbg.synthi.data.repository
 
 import android.content.ContentUris
 import android.content.Context
-import android.database.Cursor
 import android.provider.MediaStore
 import androidx.annotation.WorkerThread
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -10,10 +9,11 @@ import org.elsysbg.synthi.data.model.Media
 import org.elsysbg.synthi.data.model.Playlist
 import javax.inject.Inject
 
-@Suppress("DEPRECATION")
 @WorkerThread
 class MediaRepositoryHelper @Inject constructor(@ApplicationContext val context: Context) {
-    private fun getMediaCursor(): Cursor? {
+    fun getMedias(): List<Media> {
+        val medias = mutableListOf<Media>()
+
         val collection = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(
             MediaStore.Audio.Media._ID,
@@ -28,83 +28,77 @@ class MediaRepositoryHelper @Inject constructor(@ApplicationContext val context:
         )
         val selection = "${MediaStore.Audio.Media.IS_MUSIC} = ?"
         val selectionArgs = arrayOf("1")
-        val sortOrder = MediaStore.Audio.Media.DEFAULT_SORT_ORDER
-        return context.contentResolver.query(
+        val sortOrder = projection[0]
+        val query = context.contentResolver.query(
             collection,
             projection,
             selection,
             selectionArgs,
             sortOrder
         )
-    }
 
-    private fun getMedia(cursor: Cursor): Media {
-        cursor.apply {
-            val id = getLong(getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
-            val displayName = getString(getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME))
-            val duration = getLong(getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
-            val title = getString(getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE))
-            val artistId = getLong(getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST_ID))
-            val artist = getString(getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
-            val albumId = getLong(getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
-            val album = getString(getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM))
-            val track = getInt(getColumnIndexOrThrow(MediaStore.Audio.Media.TRACK))
-            val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
+        query?.use { cursor ->
+            while (cursor.moveToNext()) {
+                cursor.apply {
+                    val id = getLong(getColumnIndexOrThrow(projection[0]))
+                    val displayName = getString(getColumnIndexOrThrow(projection[1]))
+                    val duration = getLong(getColumnIndexOrThrow(projection[2]))
+                    val title = getString(getColumnIndexOrThrow(projection[3]))
+                    val artistId = getLong(getColumnIndexOrThrow(projection[4]))
+                    val artist = getString(getColumnIndexOrThrow(projection[5]))
+                    val albumId = getLong(getColumnIndexOrThrow(projection[6]))
+                    val album = getString(getColumnIndexOrThrow(projection[7]))
+                    val track = getInt(getColumnIndexOrThrow(projection[8]))
+                    val contentUri = ContentUris.withAppendedId(collection, id)
 
-            return Media(
-                contentUri,
-                id,
-                displayName,
-                duration,
-                title,
-                artistId,
-                artist,
-                albumId,
-                album,
-                track
-            )
+                    medias += Media(
+                        contentUri,
+                        id,
+                        displayName,
+                        duration,
+                        title,
+                        artistId,
+                        artist,
+                        albumId,
+                        album,
+                        track
+                    )
+                }
+            }
         }
-    }
-
-    fun getMedias(): List<Media> {
-        val medias = mutableListOf<Media>()
-        val cursor = getMediaCursor()
-
-        cursor?.use { while (it.moveToNext()) medias += getMedia(it) }
         return medias
     }
 
-    private fun getPlaylistCursor(): Cursor? {
+    @Suppress("DEPRECATION")
+    fun getPlaylists(): List<Playlist> {
+        val playlists = mutableListOf<Playlist>()
+
         val collection = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI
         val projection = arrayOf(MediaStore.Audio.Playlists._ID, MediaStore.Audio.Playlists.NAME)
-        val sortOrder = MediaStore.Audio.Playlists.DEFAULT_SORT_ORDER
-
-        return context.contentResolver.query(
+        val sortOrder = MediaStore.Audio.Playlists._ID
+        val query = context.contentResolver.query(
             collection,
             projection,
             null,
             null,
             sortOrder
         )
-    }
 
-    fun getPlaylists(): List<Playlist> {
-        val playlists = mutableListOf<Playlist>()
-        val cursor = getPlaylistCursor()
-
-        cursor?.use {
-            while (it.moveToNext()) {
-                val id = it.getLong(it.getColumnIndexOrThrow(MediaStore.Audio.Playlists._ID))
-                val name = it.getString(it.getColumnIndexOrThrow(MediaStore.Audio.Playlists.NAME))
+        query?.use { cursor ->
+            while (cursor.moveToNext()) {
+                val id = cursor.getLong(cursor.getColumnIndexOrThrow(projection[0]))
+                val name = cursor.getString(cursor.getColumnIndexOrThrow(projection[1]))
 
                 playlists += Playlist(id, name, getPlaylistMembers(id))
             }
         }
-
         return playlists
     }
 
-    private fun getPlaylistMemberCursor(playlistId: Long): Cursor? {
+    @Suppress("DEPRECATION")
+    private fun getPlaylistMembers(playlistId: Long): List<Media> {
+        val members = mutableListOf<Media>()
+
         val collection = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
         val projection = arrayOf(
             MediaStore.Audio.Playlists.Members.AUDIO_ID,
@@ -120,51 +114,46 @@ class MediaRepositoryHelper @Inject constructor(@ApplicationContext val context:
         )
         val selection = "${MediaStore.Audio.Playlists.Members.IS_MUSIC} = ?"
         val selectionArgs = arrayOf("1")
-        val sortOrder = MediaStore.Audio.Playlists.Members.DEFAULT_SORT_ORDER
-        return context.contentResolver.query(
+        val sortOrder = MediaStore.Audio.Playlists.Members.PLAY_ORDER
+        val query = context.contentResolver.query(
             collection,
             projection,
             selection,
             selectionArgs,
             sortOrder
         )
-    }
 
-    private fun getPlaylistMember(cursor: Cursor, playlistId: Long): Media {
-        cursor.apply {
-            val id = getLong(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.AUDIO_ID))
-            val displayName = getString(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.DISPLAY_NAME))
-            val duration = getLong(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.DURATION))
-            val title = getString(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.TITLE))
-            val artistId = getLong(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.ARTIST_ID))
-            val artist = getString(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.ARTIST))
-            val albumId = getLong(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.ALBUM_ID))
-            val album = getString(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.ALBUM))
-            val track = getInt(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.TRACK))
-            val playOrder = getInt(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.PLAY_ORDER))
-            val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId), id)
+        query?.use { cursor ->
+            while (cursor.moveToNext()) {
+                cursor.apply {
+                    val id = getLong(getColumnIndexOrThrow(projection[0]))
+                    val displayName = getString(getColumnIndexOrThrow(projection[1]))
+                    val duration = getLong(getColumnIndexOrThrow(projection[2]))
+                    val title = getString(getColumnIndexOrThrow(projection[3]))
+                    val artistId = getLong(getColumnIndexOrThrow(projection[4]))
+                    val artist = getString(getColumnIndexOrThrow(projection[5]))
+                    val albumId = getLong(getColumnIndexOrThrow(projection[6]))
+                    val album = getString(getColumnIndexOrThrow(projection[7]))
+                    val track = getInt(getColumnIndexOrThrow(projection[8]))
+                    val playOrder = getInt(getColumnIndexOrThrow(projection[9]))
+                    val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId),id)
 
-            return Media(
-                contentUri,
-                id,
-                displayName,
-                duration,
-                title,
-                artistId,
-                artist,
-                albumId,
-                album,
-                track,
-                playOrder
-            )
+                    members += Media(
+                        contentUri,
+                        id,
+                        displayName,
+                        duration,
+                        title,
+                        artistId,
+                        artist,
+                        albumId,
+                        album,
+                        track,
+                        playOrder
+                    )
+                }
+            }
         }
-    }
-
-    private fun getPlaylistMembers(playlistId: Long): List<Media> {
-        val members = mutableListOf<Media>()
-        val cursor = getPlaylistMemberCursor(playlistId)
-
-        cursor?.use { while (it.moveToNext()) members += getPlaylistMember(it, playlistId) }
         return members
     }
 }

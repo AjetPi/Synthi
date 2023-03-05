@@ -18,9 +18,9 @@ class PlaybackPreparerImpl(private val service: MediaService) : MediaSessionConn
     override fun onPrepareFromMediaId(mediaId: String, playWhenReady: Boolean, extras: Bundle?) {
         service.apply {
             mediaSource.whenReady {
-                val itemToPlay = mediaSource.mediasMetadata.find { it.description.mediaId == mediaId }
-                currentMediaMetadata = itemToPlay
-                preparePlayer(mediaSource.mediasMetadata, itemToPlay, playWhenReady)
+                val itemToPlay = mediaSource.metadataList.find { it.description.mediaId == mediaId }
+                currentMetadata = itemToPlay
+                prepare(mediaSource.metadataList, itemToPlay, playWhenReady)
             }
         }
     }

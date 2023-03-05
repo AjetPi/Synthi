@@ -21,12 +21,9 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MediaService : MediaBrowserServiceCompat() {
-    @Inject
-    lateinit var dataSourceFactory: CacheDataSource.Factory
-    @Inject
-    lateinit var exoPlayer: ExoPlayer
-    @Inject
-    lateinit var mediaSource: MediaSource
+    @Inject lateinit var dataSourceFactory: CacheDataSource.Factory
+    @Inject lateinit var mediaSource: MediaSource
+    @Inject lateinit var player: ExoPlayer
 
     private val serviceJob = SupervisorJob()
     private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
@@ -34,12 +31,11 @@ class MediaService : MediaBrowserServiceCompat() {
     lateinit var session: MediaSessionCompat
     private lateinit var sessionConnector: MediaSessionConnector
 
-    internal lateinit var notificationManager: NotificationManager
+    var isForegroundService = false
+    var currentMetadata: MediaMetadataCompat? = null
+    lateinit var notificationManager: NotificationManager
 
-    var isForegroundService: Boolean = false
-    var currentMediaMetadata: MediaMetadataCompat? = null
-
-    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot =
+    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?) =
         BrowserRoot(Constants.MEDIA_ROOT_ID, null)
 
     override fun onLoadChildren(
@@ -49,15 +45,10 @@ class MediaService : MediaBrowserServiceCompat() {
         when (parentId) {
             Constants.MEDIA_ROOT_ID -> {
                 val resultsSent = mediaSource.whenReady { isInitialized ->
-                    if (isInitialized) {
-                        result.sendResult(mediaSource.getMediaItems())
-                    } else {
-                        result.sendResult(null)
-                    }
+                    if (isInitialized) result.sendResult(mediaSource.getMediaItems())
+                    else result.sendResult(null)
                 }
-                if (!resultsSent) {
-                    result.detach()
-                }
+                if (!resultsSent) result.detach()
             }
             else -> Unit
         }
@@ -65,7 +56,7 @@ class MediaService : MediaBrowserServiceCompat() {
 
     override fun onCreate() {
         super.onCreate()
-        serviceScope.launch { mediaSource.setMediasMetadata() }
+        serviceScope.launch { mediaSource.setMetadata() }
 
         val activityIntent = packageManager.getLaunchIntentForPackage(packageName).let { intent ->
             PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
@@ -78,26 +69,30 @@ class MediaService : MediaBrowserServiceCompat() {
         sessionConnector = MediaSessionConnector(session).apply {
             setPlaybackPreparer(PlaybackPreparerImpl(this@MediaService))
             setQueueNavigator(TimelineQueueNavigatorImpl(this@MediaService))
-            setPlayer(exoPlayer)
+            setPlayer(player)
         }
 
-        notificationManager = NotificationManager(this, session.sessionToken, NotificationListenerImpl(this))
-        notificationManager.startNotification(exoPlayer)
+        notificationManager = NotificationManager(
+            this,
+            session.sessionToken,
+            NotificationListenerImpl(this)
+        )
+        notificationManager.startNotification(player)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         serviceScope.cancel()
-        exoPlayer.release()
+        player.release()
     }
 
-    fun preparePlayer(
-        mediasMetadata: List<MediaMetadataCompat>,
+    fun prepare(
+        metadataList: List<MediaMetadataCompat>,
         itemToPlay: MediaMetadataCompat?,
         playWhenReady: Boolean
     ) {
-        val indexToPlay = if (currentMediaMetadata == null) 0 else mediasMetadata.indexOf(itemToPlay)
-        exoPlayer.apply {
+        val indexToPlay = if (currentMetadata == null) 0 else metadataList.indexOf(itemToPlay)
+        player.apply {
             addListener(PlayerListenerImpl(this@MediaService))
             setMediaSource(mediaSource.getMediaSource(dataSourceFactory))
             prepare()

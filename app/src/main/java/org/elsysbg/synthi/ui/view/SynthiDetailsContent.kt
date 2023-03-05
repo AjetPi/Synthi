@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.RequestManager
 import org.elsysbg.synthi.data.model.Media
+import org.elsysbg.synthi.ui.Category
 
 @Composable
 fun SynthiDetailsContent(
@@ -45,12 +46,15 @@ fun SynthiDetailsContent(
             }
         }
         items(list) { media ->
-            SynthiOrderedAudioItem(
-                number = media.track,
+            SynthiUnorderedAudioItem(
+                requestManager = requestManager,
+                coverUri = media.coverUri,
+                imageVector = Category.Songs.icon,
                 title = media.title,
                 subtitle = null,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(vertical = 8.dp)
                     .clickable { onItemClick(media) }
             )
         }
