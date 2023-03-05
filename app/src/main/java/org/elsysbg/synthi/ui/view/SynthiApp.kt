@@ -50,8 +50,8 @@ fun SynthiApp(
         }
     ) { innerPadding ->
         SynthiNavHost(
-            uiState = uiState,
             navController = navController,
+            uiState = uiState,
             currentMedia = viewModel.currentMedia,
             playbackState = viewModel.playbackState.value,
             currentPosition = viewModel.currentPosition,
@@ -60,7 +60,8 @@ fun SynthiApp(
             skipNext = { viewModel.skipNext() },
             onPlay = { viewModel.playMedia(it) },
             onNavigate = { viewModel.updateBottomNavigationState(it) },
-            modifier = modifier.padding(innerPadding)
+            modifier = modifier.padding(innerPadding),
+            requestManager = viewModel.requestManager
         )
     }
 }

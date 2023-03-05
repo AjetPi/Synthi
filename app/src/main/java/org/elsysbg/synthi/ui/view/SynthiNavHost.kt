@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.bumptech.glide.RequestManager
 import org.elsysbg.synthi.data.model.Category
 import org.elsysbg.synthi.data.model.Media
 import org.elsysbg.synthi.ui.SynthiUiState
@@ -28,6 +29,7 @@ fun SynthiNavHost(
     onPlay: (Media) -> Unit,
     onNavigate: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    requestManager: RequestManager,
 ) {
     NavHost(
         navController = navController,
@@ -47,7 +49,8 @@ fun SynthiNavHost(
                         onListClick = { listId ->
                             onNavigate(false)
                             navController.navigate("${category.name}/$listId")
-                        }
+                        },
+                        requestManager = requestManager
                     )
                 }
                 composable(
@@ -65,7 +68,8 @@ fun SynthiNavHost(
                         onItemClick = {
                             onPlay(it)
                             navController.navigate("Player")
-                        }
+                        },
+                        requestManager = requestManager
                     )
                 }
             }
@@ -75,12 +79,13 @@ fun SynthiNavHost(
             if (currentMedia != null && playbackState != null) {
                 SynthiPlayerScreen(
                     media = currentMedia,
-                    playbackState = playbackState,
                     position = currentPosition,
+                    playbackState = playbackState,
                     seekTo = seekTo,
                     skipPrevious = skipPrevious,
                     play = onPlay,
-                    skipNext = skipNext
+                    skipNext = skipNext,
+                    requestManager = requestManager
                 )
             }
         }

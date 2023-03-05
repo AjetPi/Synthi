@@ -4,6 +4,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.RequestManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repository: MediaRepositoryImpl,
-    private val connection: MediaServiceConnection
+    private val connection: MediaServiceConnection,
+    val requestManager: RequestManager
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SynthiUiState())
     val uiState: StateFlow<SynthiUiState> = _uiState.asStateFlow()

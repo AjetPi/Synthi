@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.bumptech.glide.RequestManager
 import org.elsysbg.synthi.data.model.Category
 import org.elsysbg.synthi.data.model.Media
 import org.elsysbg.synthi.domain.util.isPlaying
@@ -22,14 +23,16 @@ fun SynthiPlayerScreen(
     skipPrevious: () -> Unit,
     play: (Media) -> Unit,
     skipNext: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    requestManager: RequestManager,
 ) {
     Column {
-        Icon(
+        SynthiCover(
+            coverUri = media.coverUri,
             imageVector = Category.Albums.icon,
-            contentDescription = null,
+            requestManager = requestManager,
             modifier = Modifier
-                .requiredSize(256.dp)
+                .requiredSize(260.dp)
                 .padding(vertical = 16.dp)
                 .align(Alignment.CenterHorizontally)
         )

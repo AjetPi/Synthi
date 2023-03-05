@@ -2,6 +2,7 @@ package org.elsysbg.synthi.ui.view
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import com.bumptech.glide.RequestManager
 import org.elsysbg.synthi.data.model.Category
 import org.elsysbg.synthi.data.model.Media
 import org.elsysbg.synthi.ui.SynthiUiState
@@ -12,13 +13,16 @@ fun SynthiHomeScreen(
     currentCategory: Category,
     onItemClick: (Media) -> Unit,
     onListClick: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    requestManager: RequestManager
 ) {
     SynthiHomeContent(
-        uiState = uiState,
+        library = uiState.library,
+        search = uiState.search,
         category = currentCategory,
         onItemClick = onItemClick,
         onListClick = onListClick,
-        modifier = modifier
+        modifier = modifier,
+        requestManager = requestManager
     )
 }

@@ -1,74 +1,89 @@
 package org.elsysbg.synthi.ui.view
 
+import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.elsysbg.synthi.ui.SynthiUiState
+import com.bumptech.glide.RequestManager
 import org.elsysbg.synthi.data.model.Category
+import org.elsysbg.synthi.data.model.Library
 import org.elsysbg.synthi.data.model.Media
 
 @Composable
 fun SynthiHomeContent(
-    uiState: SynthiUiState,
+    library: Library,
+    search: String?,
     category: Category,
     onItemClick: (Media) -> Unit,
     onListClick: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    requestManager: RequestManager
 ) {
-    uiState.apply {
-        when (category) {
-            Category.Songs -> {
-                val medias = library.songs.filter { it.title.contains(search ?: "", ignoreCase = true) }
-                LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
-                    items(medias) { media ->
-                        SynthiAudioItem(
-                            category = category,
-                            title = media.title,
-                            subtitle = media.artist,
-                            onItemClick = { onItemClick(media) }
-                        )
-                    }
+    when (category) {
+        Category.Songs -> {
+            val medias = library.songs.filter { it.title.contains(search ?: "", ignoreCase = true) }
+            LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
+                items(medias) { media ->
+                    SynthiUnorderedAudioItem(
+                        requestManager = requestManager,
+                        coverUri = media.coverUri,
+                        imageVector = category.icon,
+                        title = media.title,
+                        subtitle = media.artist,
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).clickable { onItemClick(media) }
+                    )
                 }
             }
-            Category.Albums -> {
-                val albums = library.albums.filter { it.title.contains(search ?: "", ignoreCase = true) }
-                LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
-                    items(albums) { album ->
-                        SynthiAudioItem(
-                            category = category,
-                            title = album.title,
-                            subtitle = album.artist,
-                            onItemClick = { onListClick(album.id) }
-                        )
-                    }
+        }
+        Category.Albums -> {
+            val albums =
+                library.albums.filter { it.title.contains(search ?: "", ignoreCase = true) }
+            LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
+                items(albums) { album ->
+                    SynthiUnorderedAudioItem(
+                        requestManager = requestManager,
+                        coverUri = album.coverUri,
+                        imageVector = category.icon,
+                        title = album.title,
+                        subtitle = album.artist,
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).clickable { onListClick(album.id) }
+                    )
                 }
             }
-            Category.Artists -> {
-                val artists = library.artists.filter { it.name.contains(search ?: "", ignoreCase = true) }
-                LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
-                    items(artists) { artist ->
-                        SynthiAudioItem(
-                            category = category,
-                            title = artist.name,
-                            subtitle = "",
-                            onItemClick = { onListClick(artist.id) }
-                        )
-                    }
+        }
+        Category.Artists -> {
+            val artists =
+                library.artists.filter { it.name.contains(search ?: "", ignoreCase = true) }
+            LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
+                items(artists) { artist ->
+                    SynthiUnorderedAudioItem(
+                        requestManager = requestManager,
+                        coverUri = Uri.EMPTY,
+                        imageVector = category.icon,
+                        title = artist.name,
+                        subtitle = null,
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).clickable { onListClick(artist.id) }
+                    )
                 }
             }
-            Category.Playlists -> {
-                LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
-                    items(library.playlists) { playlist ->
-                        SynthiAudioItem(
-                            category = category,
-                            title = playlist.name,
-                            subtitle = "",
-                            onItemClick = { onListClick(playlist.id) }
-                        )
-                    }
+        }
+        Category.Playlists -> {
+            LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
+                items(library.playlists) { playlist ->
+                    SynthiUnorderedAudioItem(
+                        requestManager = requestManager,
+                        coverUri = Uri.EMPTY,
+                        imageVector = category.icon,
+                        title = playlist.name,
+                        subtitle = null,
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).clickable { onListClick(playlist.id) }
+                    )
                 }
             }
         }
