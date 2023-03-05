@@ -10,7 +10,7 @@ data class Artist(
 
     val id: Long
         get() = first.artistId
-    val duration: Int
+    val duration: Long
         get() = albums.sumOf { it.duration }
     val name: String
         get() = first.artist

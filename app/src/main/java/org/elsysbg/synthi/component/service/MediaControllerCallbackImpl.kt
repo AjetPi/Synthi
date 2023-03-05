@@ -10,8 +10,8 @@ class MediaControllerCallbackImpl(private val connection: MediaServiceConnection
     }
 
     override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-        connection.currentMediaMetadata.value = metadata
+        connection.currentMetadata.value = metadata
     }
 
-    override fun onSessionDestroyed() = connection.mediaBrowserConnectionCallback.onConnectionSuspended()
+    override fun onSessionDestroyed() = connection.browserCallback.onConnectionSuspended()
 }

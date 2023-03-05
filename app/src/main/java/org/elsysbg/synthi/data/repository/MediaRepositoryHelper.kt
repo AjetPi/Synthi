@@ -42,7 +42,7 @@ class MediaRepositoryHelper @Inject constructor(@ApplicationContext val context:
         cursor.apply {
             val id = getLong(getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
             val displayName = getString(getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME))
-            val duration = getInt(getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
+            val duration = getLong(getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
             val title = getString(getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE))
             val artistId = getLong(getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST_ID))
             val artist = getString(getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST))
@@ -134,7 +134,7 @@ class MediaRepositoryHelper @Inject constructor(@ApplicationContext val context:
         cursor.apply {
             val id = getLong(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.AUDIO_ID))
             val displayName = getString(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.DISPLAY_NAME))
-            val duration = getInt(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.DURATION))
+            val duration = getLong(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.DURATION))
             val title = getString(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.TITLE))
             val artistId = getLong(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.ARTIST_ID))
             val artist = getString(getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.ARTIST))

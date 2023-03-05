@@ -2,14 +2,14 @@ package org.elsysbg.synthi.component.activity
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.RequestManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.elsysbg.synthi.data.model.Library
 import org.elsysbg.synthi.data.model.Media
@@ -30,15 +30,15 @@ class MainViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SynthiUiState())
     val uiState: StateFlow<SynthiUiState> = _uiState.asStateFlow()
 
-    private val currentMediaMetadata = connection.currentMediaMetadata
-    val currentMedia: Media?
-        get() = uiState.value.library.songs.find { media -> media.id == currentMediaMetadata.value?.description?.mediaId?.toLong() }
     val playbackState = connection.playbackState
-    val currentPosition: Long
-        get() = playbackState.value?.currentPosition ?: 0
+    private val currentMetadata = connection.currentMetadata
+    val currentMedia: Media?
+        get() = uiState.value.library.songs.find { media -> media.id == currentMetadata.value?.description?.mediaId?.toLong() }
+    val currentPosition = mutableStateOf(0L)
 
     init {
         updateLibrary()
+        updatePosition()
         connection.subscribe(Constants.MEDIA_ROOT_ID, object : MediaBrowserCompat.SubscriptionCallback() {})
     }
 
@@ -57,6 +57,15 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun updatePosition() {
+        viewModelScope.launch {
+            while (this.isActive) {
+                currentPosition.value = playbackState.value?.currentPosition ?: 0
+                delay(100L)
+            }
+        }
+    }
+
     fun updateSearch(value: String?) = _uiState.update { it.copy(search = value) }
 
     fun updateBottomNavigationState(state: Boolean) = _uiState.update { it.copy(bottomNavigationState = state) }
@@ -69,7 +78,7 @@ class MainViewModel @Inject constructor(
 
     fun playMedia(media: Media) {
         connection.apply {
-            if (media.id.toString() == currentMediaMetadata.value?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)) {
+            if (media.id.toString() == currentMetadata.value?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)) {
                 if (playbackState.value?.isPlaying == true) controls.pause() else controls.play()
             } else {
                 controls.playFromMediaId(media.id.toString(), null)

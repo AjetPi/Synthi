@@ -1,4 +1,4 @@
-package org.elsysbg.synthi.component.service
+package org.elsysbg.synthi.component.service.player
 
 import android.net.Uri
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.os.ResultReceiver
 import android.support.v4.media.session.PlaybackStateCompat
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
+import org.elsysbg.synthi.component.service.MediaService
 
 class PlaybackPreparerImpl(private val service: MediaService) : MediaSessionConnector.PlaybackPreparer {
     override fun onCommand(player: Player, command: String, extras: Bundle?, cb: ResultReceiver?) = false

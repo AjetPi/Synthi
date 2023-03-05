@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.RequestManager
 import org.elsysbg.synthi.data.model.Category
 import org.elsysbg.synthi.data.model.Media
+import org.elsysbg.synthi.domain.util.formatted
 import org.elsysbg.synthi.domain.util.isPlaying
 
 @Composable
@@ -39,10 +40,12 @@ fun SynthiPlayerScreen(
         Spacer(modifier = Modifier.requiredHeight(56.dp))
         Text(text = media.title, style = MaterialTheme.typography.subtitle1)
         Text(text = media.artist, style = MaterialTheme.typography.subtitle2, modifier = Modifier.padding(bottom = 8.dp))
-        Slider(value = position.toFloat() / media.duration, onValueChange = {}, onValueChangeFinished = {})
+        var tempPosition by remember { mutableStateOf(position) }
+        var isTemp by remember { mutableStateOf(false) }
+        Slider(value = (if (isTemp) tempPosition else position) / media.duration.toFloat(), onValueChange = { isTemp = true; tempPosition = (it * media.duration).toLong() }, onValueChangeFinished = { seekTo(tempPosition); isTemp = false })
         Box(modifier = Modifier.fillMaxWidth()) {
-            Text(text = "${position / 1000 / 60}:${position / 1000 % 60}", modifier = Modifier.align(Alignment.CenterStart))
-            Text(text = "${media.duration / 1000 / 60}:${media.duration / 1000 % 60}", modifier = Modifier.align(Alignment.CenterEnd))
+            Text(text = position.formatted, modifier = Modifier.align(Alignment.CenterStart))
+            Text(text = media.duration.formatted, modifier = Modifier.align(Alignment.CenterEnd))
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             IconButton(onClick = skipPrevious) {

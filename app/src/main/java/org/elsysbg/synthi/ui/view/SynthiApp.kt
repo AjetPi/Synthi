@@ -54,7 +54,7 @@ fun SynthiApp(
             uiState = uiState,
             currentMedia = viewModel.currentMedia,
             playbackState = viewModel.playbackState.value,
-            currentPosition = viewModel.currentPosition,
+            currentPosition = viewModel.currentPosition.value,
             seekTo = { viewModel.seekTo(it) },
             skipPrevious = { viewModel.skipPrevious() },
             skipNext = { viewModel.skipNext() },

@@ -13,6 +13,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import org.elsysbg.synthi.component.service.notification.NotificationListenerImpl
 import org.elsysbg.synthi.component.service.notification.NotificationManager
+import org.elsysbg.synthi.component.service.player.PlaybackPreparerImpl
+import org.elsysbg.synthi.component.service.player.PlayerListenerImpl
+import org.elsysbg.synthi.component.service.player.TimelineQueueNavigatorImpl
 import org.elsysbg.synthi.domain.util.Constants
 import javax.inject.Inject
 

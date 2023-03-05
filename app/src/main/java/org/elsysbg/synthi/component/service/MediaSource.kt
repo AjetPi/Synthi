@@ -49,7 +49,7 @@ class MediaSource @Inject constructor(private val repository: MediaRepositoryImp
             MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, media.contentUri.toString())
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, media.id.toString())
-                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, media.duration.toLong())
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, media.duration)
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, media.title)
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, media.artist)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, media.album)

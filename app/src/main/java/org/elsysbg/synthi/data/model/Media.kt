@@ -7,7 +7,7 @@ data class Media(
     val contentUri: Uri,
     val id: Long,
     val displayName: String,
-    val duration: Int,
+    val duration: Long,
     val title: String,
     val artistId: Long,
     val artist: String,

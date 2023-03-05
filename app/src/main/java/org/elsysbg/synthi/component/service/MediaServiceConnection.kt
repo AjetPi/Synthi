@@ -11,22 +11,21 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class MediaServiceConnection @Inject constructor(@ApplicationContext val context: Context) {
-    val playbackState = mutableStateOf<PlaybackStateCompat?>(null)
     val isConnected = mutableStateOf(false)
-    val currentMediaMetadata = mutableStateOf<MediaMetadataCompat?>(null)
+    val playbackState = mutableStateOf<PlaybackStateCompat?>(null)
+    val currentMetadata = mutableStateOf<MediaMetadataCompat?>(null)
 
     lateinit var controller: MediaControllerCompat
+    val controls: MediaControllerCompat.TransportControls
+        get() = controller.transportControls
 
-    val mediaBrowserConnectionCallback = MediaBrowserConnectionCallbackImpl(this)
+    val browserCallback = MediaBrowserConnectionCallbackImpl(this)
     val browser = MediaBrowserCompat(
         context,
         ComponentName(context, MediaService::class.java),
-        mediaBrowserConnectionCallback,
+        browserCallback,
         null
     ).apply { connect() }
-
-    val controls: MediaControllerCompat.TransportControls
-        get() = controller.transportControls
 
     fun subscribe(
         parentId:String,

@@ -10,7 +10,7 @@ data class Album(
 
     val id: Long
         get() = first.albumId
-    val duration: Int
+    val duration: Long
         get() = songs.sumOf { it.duration }
     val title: String
         get() = first.album
