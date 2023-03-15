@@ -36,17 +36,23 @@ fun SynthiDetailsContent(
                     requestManager = requestManager,
                     modifier = Modifier
                         .requiredSize(208.dp)
-                        .padding(vertical = 16.dp)
+                        .padding(vertical = 8.dp)
                         .align(Alignment.CenterHorizontally)
                 )
-                Text(text = title, style = MaterialTheme.typography.h5, modifier = Modifier.align(Alignment.CenterHorizontally))
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.h5,
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
                 Divider(modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp))
             }
         }
         items(list) { media ->
-            SynthiUnorderedAudioItem(
+            SynthiAudioItem(
                 requestManager = requestManager,
                 coverUri = media.coverUri,
                 imageVector = Category.Songs.icon,

@@ -17,5 +17,5 @@ object ViewModelModule {
     @Provides
     @ViewModelScoped
     fun provideGlide(@ApplicationContext context: Context) =
-        Glide.with(context).setDefaultRequestOptions(RequestOptions().diskCacheStrategy(DiskCacheStrategy.DATA))
+        Glide.with(context).setDefaultRequestOptions(RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
 }

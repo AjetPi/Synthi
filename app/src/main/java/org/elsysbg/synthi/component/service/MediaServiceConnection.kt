@@ -26,14 +26,4 @@ class MediaServiceConnection @Inject constructor(@ApplicationContext val context
         browserCallback,
         null
     ).apply { connect() }
-
-    fun subscribe(
-        parentId:String,
-        callback: MediaBrowserCompat.SubscriptionCallback
-    ) = browser.subscribe(parentId, callback)
-
-    fun unsubscribe(
-        parentId:String,
-        callback: MediaBrowserCompat.SubscriptionCallback
-    ) = browser.unsubscribe(parentId, callback)
 }

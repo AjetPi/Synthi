@@ -1,6 +1,5 @@
 package org.elsysbg.synthi.ui.view
 
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,7 +29,7 @@ fun SynthiHomeContent(
             val songs = library.songs.filter { it.title.contains(search ?: "", ignoreCase = true) }
             LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
                 items(songs) { media ->
-                    SynthiUnorderedAudioItem(
+                    SynthiAudioItem(
                         requestManager = requestManager,
                         coverUri = media.coverUri,
                         imageVector = category.icon,
@@ -42,11 +41,10 @@ fun SynthiHomeContent(
             }
         }
         Category.Albums -> {
-            val albums =
-                library.albums.filter { it.title.contains(search ?: "", ignoreCase = true) }
+            val albums = library.albums.filter { it.title.contains(search ?: "", ignoreCase = true) }
             LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
                 items(albums) { album ->
-                    SynthiUnorderedAudioItem(
+                    SynthiAudioItem(
                         requestManager = requestManager,
                         coverUri = album.coverUri,
                         imageVector = category.icon,
@@ -58,13 +56,12 @@ fun SynthiHomeContent(
             }
         }
         Category.Artists -> {
-            val artists =
-                library.artists.filter { it.name.contains(search ?: "", ignoreCase = true) }
+            val artists = library.artists.filter { it.name.contains(search ?: "", ignoreCase = true) }
             LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
                 items(artists) { artist ->
-                    SynthiUnorderedAudioItem(
+                    SynthiAudioItem(
                         requestManager = requestManager,
-                        coverUri = Uri.EMPTY,
+                        coverUri = null,
                         imageVector = category.icon,
                         title = artist.name,
                         subtitle = null,
@@ -77,13 +74,12 @@ fun SynthiHomeContent(
             }
         }
         Category.Playlists -> {
-            val playlists =
-                library.playlists.filter { it.name.contains(search ?: "", ignoreCase = true) }
+            val playlists = library.playlists.filter { it.name.contains(search ?: "", ignoreCase = true) }
             LazyColumn(modifier = modifier, contentPadding = PaddingValues(16.dp)) {
                 items(playlists) { playlist ->
-                    SynthiUnorderedAudioItem(
+                    SynthiAudioItem(
                         requestManager = requestManager,
-                        coverUri = Uri.EMPTY,
+                        coverUri = null,
                         imageVector = category.icon,
                         title = playlist.name,
                         subtitle = null,

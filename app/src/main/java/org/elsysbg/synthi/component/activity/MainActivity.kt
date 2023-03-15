@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         requestPermission()
         setContent {
             SynthiTheme {
-                SynthiApp()
+                SynthiApp(viewModel = viewModel)
             }
         }
     }
@@ -34,6 +34,9 @@ class MainActivity : ComponentActivity() {
                     if (isGranted) viewModel.updateLibrary()
                 }
             requestPermissionLauncher.launch(permission)
+        }
+        else {
+            viewModel.updateLibrary()
         }
     }
 }

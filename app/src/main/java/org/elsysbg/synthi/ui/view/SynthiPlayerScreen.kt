@@ -27,7 +27,7 @@ fun SynthiPlayerScreen(
     modifier: Modifier = Modifier,
     requestManager: RequestManager,
 ) {
-    Column {
+    Column(modifier = modifier.padding(32.dp)) {
         SynthiCover(
             coverUri = media.coverUri,
             imageVector = Category.Albums.icon,
@@ -37,25 +37,46 @@ fun SynthiPlayerScreen(
                 .padding(vertical = 16.dp)
                 .align(Alignment.CenterHorizontally)
         )
-        Spacer(modifier = Modifier.requiredHeight(56.dp))
+        Spacer(modifier = Modifier.requiredHeight(48.dp))
         Text(text = media.title, style = MaterialTheme.typography.subtitle1)
         Text(text = media.artist, style = MaterialTheme.typography.subtitle2, modifier = Modifier.padding(bottom = 8.dp))
         var tempPosition by remember { mutableStateOf(position) }
         var isTemp by remember { mutableStateOf(false) }
-        Slider(value = (if (isTemp) tempPosition else position) / media.duration.toFloat(), onValueChange = { isTemp = true; tempPosition = (it * media.duration).toLong() }, onValueChangeFinished = { seekTo(tempPosition); isTemp = false })
+        Slider(
+            value = (if (isTemp) tempPosition else position) / media.duration.toFloat(),
+            onValueChange = { isTemp = true; tempPosition = (it * media.duration).toLong() },
+            onValueChangeFinished = { seekTo(tempPosition); isTemp = false },
+        )
         Box(modifier = Modifier.fillMaxWidth()) {
             Text(text = position.formatted, modifier = Modifier.align(Alignment.CenterStart))
             Text(text = media.duration.formatted, modifier = Modifier.align(Alignment.CenterEnd))
         }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            IconButton(onClick = skipPrevious) {
-                Icon(imageVector = Icons.Default.SkipPrevious, contentDescription = null)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            IconButton(onClick = skipPrevious, modifier = Modifier.requiredSize(32.dp)) {
+                Icon(
+                    imageVector = Icons.Default.SkipPrevious,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
-            IconButton(onClick = { play(media) }) {
-                Icon(imageVector = if (playbackState.isPlaying) Icons.Default.PauseCircle else Icons.Default.PlayCircle, contentDescription = null, modifier = Modifier.padding(horizontal = 12.dp))
+            IconButton(onClick = { play(media) }, modifier = Modifier.requiredSize(32.dp)) {
+                Icon(
+                    imageVector = if (playbackState.isPlaying) Icons.Default.PauseCircle else Icons.Default.PlayCircle,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
-            IconButton(onClick = skipNext) {
-                Icon(imageVector = Icons.Default.SkipNext, contentDescription = null)
+            IconButton(onClick = skipNext, modifier = Modifier.requiredSize(32.dp)) {
+                Icon(
+                    imageVector = Icons.Default.SkipNext,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }

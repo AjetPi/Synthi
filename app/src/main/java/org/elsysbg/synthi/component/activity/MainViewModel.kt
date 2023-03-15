@@ -1,6 +1,5 @@
 package org.elsysbg.synthi.component.activity
 
-import android.support.v4.media.MediaBrowserCompat
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -36,9 +35,7 @@ class MainViewModel @Inject constructor(
     val currentPosition = mutableStateOf(0L)
 
     init {
-        updateLibrary()
         updatePosition()
-        connection.subscribe(Constants.MEDIA_ROOT_ID, object : MediaBrowserCompat.SubscriptionCallback() {})
     }
 
     fun updateLibrary() {
@@ -60,7 +57,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             while (this.isActive) {
                 currentPosition.value = playbackState.value?.currentPosition ?: 0
-                delay(100L)
+                delay(Constants.DELAY)
             }
         }
     }
@@ -83,10 +80,5 @@ class MainViewModel @Inject constructor(
                 controls.playFromMediaId(media.id.toString(), null)
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        connection.unsubscribe(Constants.MEDIA_ROOT_ID, object : MediaBrowserCompat.SubscriptionCallback() {})
     }
 }
